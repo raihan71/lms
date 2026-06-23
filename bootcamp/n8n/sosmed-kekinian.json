@@ -1,0 +1,478 @@
+{
+  "name": "sosmed-kekinian",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11dqN1zl4DJ1d7GsIPKxE82SJYso-dBoF6gsWOc9Zrv0",
+          "mode": "list",
+          "cachedResultName": "konten-bucket",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11dqN1zl4DJ1d7GsIPKxE82SJYso-dBoF6gsWOc9Zrv0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11dqN1zl4DJ1d7GsIPKxE82SJYso-dBoF6gsWOc9Zrv0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        32,
+        -16
+      ],
+      "id": "0861deab-912b-4d3a-8b02-e4c6715b911f",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "h5SppbALswlsO74q",
+          "name": "jackappel2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all()\n  .sort((a,b) => {\n    const parseDate = (raw) => new Date(raw.json.date.replace(',',',','T'));\n    const dateA = parseDate(a);\n    const dateB = parseDate(b);\n\n    return dateB.getTime() - dateA.getTime()\n  }).slice(0, 5);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -16
+      ],
+      "id": "6c86a827-3b3a-4117-b998-bd2034d8db4a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        448,
+        -16
+      ],
+      "id": "9a154b1b-99bd-4802-8fff-9db40763ce98",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Buatkan ide konten sesuai dengan ouput seperti ini\n{\n\t\"content\": \"isi konten\",\n    \"prompt_gambar\": \"untuk perintah generate gambar\",\n    \"title\": \"judul konten\"\n}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Eliteshoes adalah toko sepatu terkenal secianjur. \n\nKamu adalah admin sosial media untuk eliteshoes yang menulis/membuat konten dan menghandle akun sosial medianya.\n\nGaya konten/tulisan: Dengan gaya yang ramah, humoris dan peduli terhadap followersnya.\n\nBahasan: Tentang trend sepatu, fakta tentang merk sepatu hingga kabar dunia hari ini\n\n**PENTING:** Topik konten ini harus berbeda dan unik, tidak boleh sama atau mirip dengan topik konten atau tulisan sebelumnya berikut ini:\n{{ $('Aggregate').item.map((item, index) => `${index + 1}. ${item.content}`).join('\\n') }}\n\nKembalikan hanya satu paragraf teks langsung, tanpa tambahan penjelasan, tanpa pembuka atau penutup.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        656,
+        -16
+      ],
+      "id": "88087caf-9272-491e-8d52-ca12d47c1e41",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        560,
+        192
+      ],
+      "id": "6ec59b76-0961-4243-8c72-f4ffc7f0feef",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M8o1KDI3u1ujr5qo",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "ide-konten"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        224
+      ],
+      "id": "83dd914d-a1d4-4fc6-9efb-223154295fad",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"content\": \"string\",\n    \"prompt_gambar\": \"string\",\n    \"title\": \"string\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        864,
+        224
+      ],
+      "id": "7fe7db4f-d8cb-438e-8f54-a222535c524a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "text": "={{ $ }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -368
+      ],
+      "id": "3cf69b32-aeff-4467-a5ba-8e53f47f4c9b",
+      "name": "Create Tweet",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "wxEmBMtmjcTxsMy5",
+          "name": "X account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "person": "lCqn2DrovX",
+        "text": "={{ $('AI Agent').item.json.output.content }}",
+        "shareMediaCategory": "IMAGE",
+        "binaryPropertyName": "=",
+        "additionalFields": {
+          "title": "={{ $('AI Agent').item.json.output.title }}"
+        }
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        -80
+      ],
+      "id": "56a92929-8418-48eb-bbc6-3dcfaa9044f7",
+      "name": "Create a post",
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "bIWjaJV1TgRtqsnU",
+          "name": "LinkedIn account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11dqN1zl4DJ1d7GsIPKxE82SJYso-dBoF6gsWOc9Zrv0",
+          "mode": "list",
+          "cachedResultName": "konten-bucket",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11dqN1zl4DJ1d7GsIPKxE82SJYso-dBoF6gsWOc9Zrv0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11dqN1zl4DJ1d7GsIPKxE82SJYso-dBoF6gsWOc9Zrv0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "tanggal": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}",
+            "content": "={{ $('AI Agent').item.json.output.content }}",
+            "judul": "={{ $('AI Agent').item.json.output.title }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "tanggal",
+              "displayName": "tanggal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content",
+              "displayName": "content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "judul",
+              "displayName": "judul",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        128
+      ],
+      "id": "bfdd181d-ac5b-411e-8ec1-b7df6e0ed8c1",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "h5SppbALswlsO74q",
+          "name": "jackappel2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        672,
+        -368
+      ],
+      "id": "1143954e-c662-4701-b9b1-640283886963",
+      "name": "When clicking ‘Execute workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 2,
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        -16
+      ],
+      "id": "398b03e0-d93c-4eed-aaaa-5f275803a4ce",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "modelId": {
+          "__rl": true,
+          "value": "models/veo-2.0-generate-001",
+          "mode": "list",
+          "cachedResultName": "models/veo-2.0-generate-001"
+        },
+        "prompt": "={{ $('AI Agent').item.json.output.prompt_gambar }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        144
+      ],
+      "id": "b488022b-4975-488b-be18-e6728d99024a",
+      "name": "Generate a video",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "F1TuxIzDQUF89k96",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash-image",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash-image (Nano Banana)"
+        },
+        "prompt": "={{ $('AI Agent').item.json.output.prompt_gambar }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        -48
+      ],
+      "id": "0dcce2d5-e0d1-43be-b72c-03c604021dbf",
+      "name": "Generate an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "F1TuxIzDQUF89k96",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate a video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate an image": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate a video": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0485ca8c-91a3-4315-99e3-bf325fdc0ed5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3ad2301ba8ebde940d1b944a782561f04d8b2ec8c7e68468f620d4a18ba37598"
+  },
+  "id": "J16WpKJNiZ8LbXCz",
+  "tags": []
+}

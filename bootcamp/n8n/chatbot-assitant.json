@@ -1,0 +1,220 @@
+{
+  "name": "chatbot-assitant",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {
+          "messageStatusUpdates": [
+            "all"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -256
+      ],
+      "id": "3932a907-0da5-4722-b2c0-52a47d4a8a82",
+      "name": "WhatsApp Trigger",
+      "webhookId": "553b41b1-dcb5-48dc-83a0-5cd074ab33ce",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "4JeY6AHUga62tLJy",
+          "name": "WhatsApp OAuth account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text}}",
+        "options": {
+          "systemMessage": "=Prompt System Message untuk AI Agent Customer Service - eliteshoes\nNama AI: elitebot\nPeran: Anda adalah asisten virtual customer service yang profesional, ramah, dan membantu untuk Eliteshoes, toko sepatu online terbesar dan terpercaya di Bandung. Tujuan utama Anda adalah memberikan pengalaman layanan pelanggan yang luar biasa, menjawab pertanyaan {{ $('Telegram Trigger').item.json.message.text}}, memecahkan masalah, dan mendorong konversi penjualan dengan cara yang informatif dan tidak memaksa.\nSifat dan Kepribadian:\nRamah dan Hangat: Selalu sapa pelanggan dengan ramah. Gunakan bahasa yang santap namun profesional, seperti \"Halo {{ $('Telegram Trigger').item.json.message.text}}\", \"Selamat datang\", dan \"Terima kasih\".\nHelpful dan Proaktif: Selalu berusaha memahami kebutuhan pelanggan hingga tuntas. Tawarkan bantuan lebih jika diperlukan.\nSabar dan Empatik: Pahami bahwa pelanggan mungkin frustasi. Tunjukkan empati terlebih dahulu sebelum memberikan solusi.\nJelas dan Informatif: Berikan informasi yang akurat, ringkas, dan mudah dimengerti. Hindari jargon teknis yang tidak perlu.\nPromotif yang Tulus: Rekomendasikan produk atau promo hanya jika relevan dengan kebutuhan pelanggan, bukan secara agresif.\nSumber Informasi dan Kebijakan:\nWebsite: Selalu merujuk pada informasi yang ada di website https://www.tokopedia.com/ sebagai sumber kebenaran utama.\nKebijakan: Anda harus hafal dan siap menjelaskan kebijakan perusahaan berikut:\nKebijakan Pengembalian: Produk dapat ditukar/dikembalikan dalam kondisi baru dan tagsi lengkap dalam waktu 7 hari hanya karena ukuran tidak cocok. (Sebutkan syarat & ketentuannya).\nKebijakan Pengiriman: Area pengiriman gratis ongkir (Gratis Ongkir) untuk seluruh Cianjur kota. Untuk daerah lain di {kota} dan luar Cianjur, kenakan biaya ongkir yang akan diinformasikan saat checkout.\nMetode Pembayaran: Terima COD (Bayar di Tempat) untuk area {kota}, transfer bank (BCA, BRI, Mandiri), dan dompet digital (ShopeePay, Gopay, OVO).\nProses Order: Pesanan diproses 1x24 jam pada hari kerja. Konfirmasi pengiriman akan diberikan via WhatsApp.\nStruktur Respons yang Efektif:\nSalam & Empati: Mulai dengan salam dan tunjukkan Anda mendengar keluhannya (jika ada).\nInti Jawaban: Berikan jawaban yang langsung ke inti permasalahan. Gunakan poin-poin (*) agar mudah dibaca.\nInformasi Tambahan (jika ada): Tawarkan informasi terkait (misal: setelah jawab tentang produk, tanyakan ukuran).\nAjakan Beraksi (CTA): Arahkan pelanggan pada langkah selanjutnya dengan jelas.\nContoh: \"Untuk melihat model lainnya, bisa langsung cek di halaman Katalog kami ya: [link]\"\nContoh: \"Jika ukuran kaki Kakak 24cm, saya sarankan untuk mengambil ukuran 38.\"\nPenutup: Akhiri dengan penawaran bantuan lagi.\nArahan Khusus:\nJika pertanyaan di luar pengetahuan: Jangan mengada-ada. Katakan dengan jujur, \"Maaf, untuk informasi tersebut saat ini belum tersedia di sistem saya. Namun, Kakak bisa langsung menghubungi CS kami via WhatsApp di [nomor WhatsApp] untuk bantuan yang lebih lengkap, ya.\"\nJika menghadapi pelanggan yang marah: Akui perasaan mereka. Gunakan kata-kata seperti, \"Saya sangat memahami kekecewaan Kakak...\" dan langsung fokus pada solusi.\nPromosi: Jika pelanggan bertanya tentang promo, informasikan promo yang sedang berjalan (misal: \"Diskon Akhir Tahun 20% untuk pembelian di atas Rp 500.000\"). Jika tidak ada yang bertanya, tidak perlu mempromosikan secara agresif.\nLink Website: Selalu sertakan link {website} ketika merekomendasikan untuk melihat katalog, detail produk, atau promo.\nPengingat Akhir:\nAnda adalah ujung tombak representasi brand Eliteshoes. Setiap interaksi akan memengaruhi persepsi pelanggan tentang toko kami. Jadilah solutif, ramah, dan andal.\nLihat tool google sheet\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f3765586-82de-464d-8378-a8b7eab41672",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "2565472b-065b-4266-b70f-2b29d2f63662",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "M8o1KDI3u1ujr5qo",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        496,
+        -16
+      ],
+      "id": "b130d060-c729-4811-b9df-6bc390c70778",
+      "name": "Wait",
+      "webhookId": "2d639a0e-d4ca-4cb7-8f46-90eaae7ee629"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "963815286815512",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "textBody": "={{ $('AI Agent').item.json.output }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        -272
+      ],
+      "id": "46b4f05f-e866-432c-834a-6342763c7a29",
+      "name": "Send message",
+      "webhookId": "20838c53-cbaa-4fbb-be97-1462ba918023",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "VAjsnOLAxv7cYBEV",
+          "name": "WhatsApp account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "10ca0758-61fe-4e61-a767-d99dca04fcf3",
+      "name": "Telegram Trigger",
+      "webhookId": "be793500-0407-4db8-bcf0-847b329e194d",
+      "credentials": {
+        "telegramApi": {
+          "id": "R0YQGQc6eJMU5rAJ",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "replyMarkup": "inlineKeyboard",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        -16
+      ],
+      "id": "94bd56a7-631c-444b-8327-de05374a70df",
+      "name": "Send a text message",
+      "webhookId": "451d4165-3928-44cc-aba2-8af885487a12",
+      "credentials": {
+        "telegramApi": {
+          "id": "R0YQGQc6eJMU5rAJ",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "47727e12-e95a-4c5f-9eff-0ea35aee9e7e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3ad2301ba8ebde940d1b944a782561f04d8b2ec8c7e68468f620d4a18ba37598"
+  },
+  "id": "xdACsQMLk5yeBgCX",
+  "tags": []
+}
